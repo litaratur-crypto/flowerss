@@ -12,11 +12,9 @@
     --bg-mid: #f4ece4;
     --bg-bottom: #efe4db;
     --ink: #2d2524;
-    --ink-soft: rgba(45, 37, 36, 0.72);
     --line: rgba(168, 134, 136, 0.45);
     --hint: rgba(112, 97, 95, 0.72);
     --cursor: rgba(132, 88, 95, 0.42);
-    --shadow: rgba(58, 39, 41, 0.08);
   }
 
   * {
@@ -46,7 +44,7 @@
       linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 52%, var(--bg-bottom) 100%);
   }
 
-  /* Daha rafine bir atmosfer için çok hafif doku katmanı. */
+  /* Arka plana hafif premium bir doku katmanı eklendi. */
   body::before,
   body::after {
     content: "";
@@ -69,7 +67,7 @@
     mix-blend-mode: multiply;
   }
 
-  /* Cursor efekti kaldı ama daha sakin ve yumuşak hale getirildi. */
+  /* Cursor efekti daha zarif bir hale getirildi. */
   #cursor {
     position: fixed;
     top: -100px;
@@ -136,7 +134,7 @@
     gap: 0.22rem;
   }
 
-  /* Yazı gelişleri belirgin biçimde yavaşlatıldı ve blur/fade yumuşatıldı. */
+  /* Şiir satırları daha sakin ve yumuşak bir tempoda açılıyor. */
   .poem p span.line {
     display: block;
     font-size: clamp(1.22rem, 4.2vw, 1.72rem);
@@ -229,7 +227,6 @@
     color: rgba(112, 97, 95, 0.58);
   }
 
-  /* Audio görünmez ama yerel dosya yolundan çalışacak şekilde bırakıldı. */
   #bgMusic {
     display: none;
   }
@@ -274,7 +271,7 @@
 <div id="cursor"></div>
 
 <audio id="bgMusic" preload="auto" loop playsinline>
-  <source src="./music/song.mpeg" type="audio/mpeg">
+  <source src="./song.mpeg" type="audio/mpeg">
 </audio>
 
 <div id="hero">
@@ -292,26 +289,26 @@
 <div class="hint">ekranda herhangi bir yere bas</div>
 
 <script>
-  // Yerel dosyadan autoplay denenir; engellenirse ilk etkileşimde tekrar başlatılır.
+  // Repo ana klasöründeki song.mpeg dosyası için autoplay denenir; engellenirse ilk etkileşimde tekrar başlatılır.
   const music = document.getElementById('bgMusic');
   let audioStarted = false;
   let firstInteractionStarted = false;
   music.volume = 0.62;
 
   music.addEventListener('loadeddata', () => {
-    console.info('[audio] Kaynak yüklendi:', music.currentSrc || './music/song.mpeg');
+    console.info('[audio] Kaynak yüklendi:', music.currentSrc || './song.mpeg');
   });
 
   music.addEventListener('error', () => {
-    console.error('[audio] ./music/song.mpeg yüklenemedi. Dosya yolunu ve uzantıyı kontrol et.');
+    console.error('[audio] ./song.mpeg yüklenemedi. Dosya yolunu kontrol et.');
   });
 
-  console.info('[audio] Açılışta autoplay denenecek. Engellenirse ilk etkileşimde devam edilecek. Kaynak: ./music/song.mpeg');
+  console.info('[audio] Açılışta autoplay denenecek. Engellenirse ilk etkileşimde devam edilecek. Kaynak: ./song.mpeg');
   music.load();
 
   function playMusic(originLabel) {
     if (!music.querySelector('source') || !music.querySelector('source').getAttribute('src')) {
-      console.warn('[audio] <source> etiketi boş. ./music/song.mpeg yolunu ayarla.');
+      console.warn('[audio] <source> etiketi boş. ./song.mpeg yolunu ayarla.');
       return Promise.resolve(false);
     }
 
@@ -334,7 +331,7 @@
     return Promise.resolve(true);
   }
 
-  // Sayfa açılınca otomatik başlatma için best-effort deneme yapıyoruz.
+  // Sayfa açılır açılmaz best-effort autoplay denenir.
   function attemptAutoplay(originLabel) {
     if (audioStarted) return;
     playMusic(originLabel);
@@ -359,7 +356,7 @@
     }
   });
 
-  // Cursor hareketi doğrudan sert izleme yerine hafif gecikmeli tutuldu.
+  // Cursor hareketi daha akışkan hale getirildi.
   const cursorEl = document.getElementById('cursor');
   let pointerX = window.innerWidth * 0.5;
   let pointerY = window.innerHeight * 0.5;
@@ -384,7 +381,7 @@
     cursorEl.classList.remove('clicking');
   }, { passive: true });
 
-  // Tek canvas yapısı korundu; çiçekler doğal fazlarla burada çiziliyor.
+  // Çiçek animasyonları aynı canvas üzerinde, daha canlı ve daha hızlı büyüyecek şekilde düzenlendi.
   const canvas = document.getElementById('flowerCanvas');
   const ctx = canvas.getContext('2d');
 
@@ -607,7 +604,6 @@
       this.swaySpeed = 0.55 + Math.random() * 0.24;
       this.life = options.life || (this.isAmbient ? 34 : 20);
       this.fadeDuration = this.isAmbient ? 4.2 : 3.1;
-      /* Büyüme temposu hızlandırıldı ama doğal faz akışı korundu. */
       this.stemDuration = 1.18 + Math.random() * 0.28;
       this.leafDuration = 0.62 + Math.random() * 0.18;
       this.budDuration = 0.48 + Math.random() * 0.12;
@@ -615,7 +611,7 @@
       this.coreDuration = 0.58 + Math.random() * 0.14;
       this.done = false;
 
-      /* Etkileşim çiçeklerinde dokunulan nokta çiçeğin başı gibi hissedilsin. */
+      // Dokunulan noktaya daha doğal oturan bir çiçek başı hissi veriyoruz.
       if (options.bloomAtPoint) {
         this.x = clamp(
           x - this.stemCurve * this.stemHeight * 0.86,
@@ -858,7 +854,7 @@
     trimFlowers();
   }
 
-  // İlk açılıştaki çiçekler artık yavaş büyüyen sahne elemanları olarak geliyor.
+  // Açılışta tabanda canlı bir floral kompozisyon oluşsun diye birkaç çiçek yayıyoruz.
   function seedIntroFlowers() {
     const compact = viewportWidth < 720;
     const seeds = compact
